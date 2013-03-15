@@ -1,0 +1,22 @@
+#!/bin/bash
+
+ARGS=$*
+
+clear
+while [ true ] ; do
+  $ARGS
+  res=$?
+
+  echo
+  if [ "$res" -eq "0" ]; then
+    echo -e '\E[32m'
+    echo OK
+  else
+    echo -en '\E[31m'
+    echo "Failed ($res)"
+  fi
+  echo -en "\033[0m"
+
+  inotifywait -q *
+  clear
+done
