@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ARGS=$*
+pause=false
 
 clear
 while [ true ] ; do
@@ -17,6 +18,11 @@ while [ true ] ; do
   fi
   echo -en "\033[0m"
 
+  if $pause ; then
+    sleep 0.5
+  else
+    pause=true
+  fi
   inotifywait -q *
   clear
 done
