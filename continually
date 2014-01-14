@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ARGS=$*
+pause=false
 
 clear
 while [ true ] ; do
@@ -17,6 +18,19 @@ while [ true ] ; do
   fi
   echo -en "\033[0m"
 
-  inotifywait -q *
+  if $pause ; then
+    sleep 0.5
+  else
+    pause=true
+  fi
+  inotifywait \
+    --recursive \
+    --quiet \
+    --event modify \
+    --event close_write \
+    --event move \
+    --event create \
+    --event delete \
+    *
   clear
 done
