@@ -31,6 +31,7 @@ while [ true ] ; do
     --event move \
     --event create \
     --event delete \
+    --exclude \.swp \
     *
   clear
 done
