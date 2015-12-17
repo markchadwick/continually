@@ -1,12 +1,40 @@
-#!/bin/bash
+#!/bin/bash -e
 
 ARGS=$*
 pause=false
+platform=`uname`
+
+function wait_darwin() {
+  fswatch -r -1 .
+}
+
+function wait_linux() {
+  inotifywait \
+    --recursive \
+    --quiet \
+    --event modify \
+    --event close_write \
+    --event move \
+    --event create \
+    --event delete \
+    --exclude \.swp \
+    *
+}
+
+function await_change() {
+  if [ "$platform" == 'Darwin' ]; then
+    wait_darwin
+  else
+    wait_linux
+  fi
+}
 
 clear
 while [ true ] ; do
+  set +e
   $ARGS
   res=$?
+  set -e
 
   echo
   if [ "$res" -eq "0" ]; then
@@ -23,15 +51,8 @@ while [ true ] ; do
   else
     pause=true
   fi
-  inotifywait \
-    --recursive \
-    --quiet \
-    --event modify \
-    --event close_write \
-    --event move \
-    --event create \
-    --event delete \
-    --exclude \.swp \
-    *
+
+  await_change
+
   clear
 done
